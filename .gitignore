@@ -1,0 +1,25 @@
+# Build & distribution
+dist/
+*.zip
+*.crx
+
+# Dependencies
+node_modules/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment
+.env
+.env.local

@@ -1,0 +1,31 @@
+{
+  "name": "udemy-transcript-downloader",
+  "version": "1.0.0",
+  "description": "Chrome extension to download transcripts and subtitles from Udemy & Udemy Business in TXT, SRT, VTT, Markdown, and JSON formats.",
+  "scripts": {
+    "test": "node tests/test-parser.js",
+    "icons": "python3 scripts/generate_icons.py",
+    "package": "bash scripts/package.sh"
+  },
+  "keywords": [
+    "chrome-extension",
+    "udemy",
+    "udemy-business",
+    "transcript-downloader",
+    "subtitles",
+    "srt",
+    "vtt",
+    "manifest-v3",
+    "open-source"
+  ],
+  "author": "Pasquale Lodise <pakilodi@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lupohirp/udemy-transcript-downloader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lupohirp/udemy-transcript-downloader/issues"
+  },
+  "homepage": "https://github.com/lupohirp/udemy-transcript-downloader#readme"
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Udemy Transcript Downloader</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-group">
+        <img src="../icons/icon-48.png" alt="Logo" class="app-logo">
+        <div>
+          <h1 class="app-title">Udemy Transcripts</h1>
+          <span class="app-subtitle">& Subtitles Downloader</span>
+        </div>
+      </div>
+      <span class="version-badge">v1.0.0</span>
+    </header>
+
+    <!-- Main Content State: Not on Udemy / Not on Lecture -->
+    <div id="state-inactive" class="state-view hidden">
+      <div class="empty-state">
+        <div class="empty-icon">📺</div>
+        <h3>No Lecture Detected</h3>
+        <p>Navigate to any video lecture on <strong>Udemy</strong> or <strong>Udemy Business</strong> to extract and download transcripts.</p>
+        <a href="https://www.udemy.com" target="_blank" class="btn btn-secondary">Go to Udemy</a>
+      </div>
+    </div>
+
+    <!-- Main Content State: Loading -->
+    <div id="state-loading" class="state-view">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Detecting lecture transcripts...</p>
+    </div>
+
+    <!-- Main Content State: Active Lecture -->
+    <div id="state-active" class="state-view hidden">
+      <!-- Course & Lecture Info Card -->
+      <div class="info-card">
+        <div class="info-header">
+          <span class="info-tag">Active Lecture</span>
+          <span id="badge-captions-count" class="badge">0 tracks</span>
+        </div>
+        <h2 id="course-title" class="course-name">Course Title</h2>
+        <h3 id="lecture-title" class="lecture-name">Lecture Title</h3>
+      </div>
+
+      <!-- Settings / Options -->
+      <div class="control-group">
+        <label for="select-language" class="control-label">Transcript Language</label>
+        <select id="select-language" class="form-select">
+          <option value="" disabled selected>Loading languages...</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Export Format</label>
+        <div class="format-grid">
+          <button type="button" class="format-pill active" data-format="txt-clean">TXT (Clean)</button>
+          <button type="button" class="format-pill" data-format="txt-timed">TXT (Timed)</button>
+          <button type="button" class="format-pill" data-format="srt">SRT</button>
+          <button type="button" class="format-pill" data-format="vtt">VTT</button>
+          <button type="button" class="format-pill" data-format="md">Markdown</button>
+          <button type="button" class="format-pill" data-format="json">JSON</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="btn-download" class="btn btn-primary" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Transcript
+        </button>
+
+        <div class="secondary-actions">
+          <button id="btn-copy" class="btn btn-secondary" type="button" title="Copy to clipboard">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span id="copy-btn-text">Copy</span>
+          </button>
+          <button id="btn-preview-toggle" class="btn btn-secondary" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            Preview
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Preview Drawer -->
+      <div id="preview-container" class="preview-box hidden">
+        <div class="preview-header">
+          <span class="preview-title">Live Preview (<span id="preview-word-count">0</span> words)</span>
+          <button id="btn-copy-preview" class="btn-text" type="button">Copy Preview</button>
+        </div>
+        <textarea id="preview-text" class="preview-textarea" readonly></textarea>
+      </div>
+
+      <!-- Batch Export Accordion -->
+      <div class="batch-section">
+        <button id="btn-batch-toggle" class="batch-header-btn" type="button">
+          <span>📦 Batch Course Export</span>
+          <span id="batch-arrow">▼</span>
+        </button>
+        <div id="batch-content" class="batch-content hidden">
+          <p class="batch-description">Download transcripts for all lectures in this course at once.</p>
+          <button id="btn-batch-download" class="btn btn-outline" type="button">
+            Start Course Download
+          </button>
+          <div id="batch-progress-container" class="batch-progress-container hidden">
+            <div class="progress-bar-bg">
+              <div id="batch-progress-bar" class="progress-bar-fill"></div>
+            </div>
+            <span id="batch-progress-text" class="progress-text">Processing 0/0 lectures...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>100% Client-Side & Private</span>
+      <a href="https://github.com/lupohirp/udemy-transcript-downloader" target="_blank" class="footer-link">GitHub</a>
+    </footer>
+  </div>
+
+  <script src="../utils/parser.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+/* Udemy Transcript & Caption Downloader - Injected button styling */
+.udemy-transcript-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(45, 47, 49, 0.85);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  z-index: 1000;
+  margin-left: 8px;
+}
+
+.udemy-transcript-quick-btn:hover {
+  background-color: #a435f0; /* Udemy signature purple */
+  border-color: #a435f0;
+  transform: translateY(-1px);
+}
+
+.udemy-transcript-quick-btn:active {
+  transform: translateY(0);
+}
+
+.udemy-transcript-quick-btn svg {
+  stroke: currentColor;
+  flex-shrink: 0;
+}
