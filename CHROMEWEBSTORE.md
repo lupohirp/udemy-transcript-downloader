@@ -11,34 +11,34 @@ Udemy Transcript & Caption Downloader
 Download video transcripts and subtitles from Udemy & Udemy Business in TXT, SRT, VTT, Markdown, and JSON formats.
 
 **Detailed Description** [REQUIRED]  
-Udemy Transcript & Caption Downloader allows you to easily extract, preview, copy, and download video transcripts and subtitles from any Udemy or Udemy Business course lecture with a single click.
+Udemy Transcript & Caption Downloader allows you to extract, preview, copy, and download video transcripts and subtitles from any Udemy or Udemy Business course lecture.
 
-Whether you want to read lecture notes offline, import transcripts into AI tools (ChatGPT, Claude, Gemini, NotebookLM) for study summaries, or save subtitle files for video players, this extension provides clean, properly formatted exports in multiple formats.
+Whether you want to read lecture notes offline, review study materials, or export subtitle files for media players, this extension provides clean, properly formatted exports in multiple formats.
 
 Key Features:
 - Supports both personal Udemy (udemy.com) and enterprise Udemy Business accounts (*.udemy.com)
-- Clean Text Export (.txt): Formatted into natural, readable paragraphs with speech pauses and sentence structure preserved—perfect for reading, studying, and feeding into AI models
-- Timestamped Text Export (.txt): Retains timecodes [MM:SS] line by line for quick reference
-- Subtitle Formats: Full support for standard SubRip Subtitles (.srt) and WebVTT (.vtt)
-- Markdown (.md) Format: Neatly organized headers, course metadata, and lecture sections
-- JSON (.json) Format: Structured cue timing and text for developers and knowledge workflows
-- 1-Click Copy to Clipboard: Instantly copy full transcripts with visual confirmation
-- Built-in Live Preview: Inspect transcripts, check word count, and copy text directly from the popup
-- Course Batch Export: Download transcripts for all lectures across an entire course in your selected format
+- Clean Text (.txt): Merged into natural, readable paragraphs with subtitle line break artifacts removed
+- Timed Text (.txt): Preserves [MM:SS] timecodes at the start of each line
+- Subtitle Formats: Standard SubRip (.srt) and WebVTT (.vtt) timecoded subtitles
+- Markdown (.md): Structured notes with course metadata, lecture titles, and timestamped sections
+- JSON (.json): Structured array with cue timestamps and text for scripts and data processing
+- Quick Copy: Copy transcripts directly to the clipboard with one click
+- In-Popup Preview: Inspect the full text and check word count before downloading
+- Batch Course Export: Download all lecture transcripts in the entire course at once as a bundled ZIP archive, single merged file, or individual lecture files
 - Multi-Language Support: Automatically detects all available subtitle tracks and languages (including auto-generated captions)
-- In-Player Quick Button: Download transcripts directly from the course player without leaving the page
+- In-Player Button: Download transcripts directly from the video player toolbar
 
 How to Use:
 1. Open any video lecture on Udemy or Udemy Business.
-2. Click the Udemy Transcript Downloader icon in your browser toolbar (or use the quick button in the player).
-3. Choose your preferred language and export format (TXT, SRT, VTT, Markdown, or JSON).
-4. Click "Download Transcript" or "Copy" to save your transcript immediately.
+2. Click the extension icon in your browser toolbar (or use the quick button in the player).
+3. Choose your preferred language and export format.
+4. Click "Download" or "Copy".
 
-Privacy & Permissions Note:
-Your privacy is fully protected. All transcript processing and formatting takes place entirely locally within your browser. The extension never collects, stores, or transmits your account details, browsing history, or personal data to any external server.
+Privacy:
+All transcript extraction and formatting is executed locally inside your browser. The extension does not collect, store, or transmit any user data, account credentials, or browsing history to external servers.
 
-Support & Feedback:
-If you encounter any issues or have feature requests, visit our open-source project page on GitHub: https://github.com/lupohirp/udemy-transcript-downloader/issues
+Support & Issues:
+Source code and issue tracker on GitHub: https://github.com/lupohirp/udemy-transcript-downloader
 
 **Category** [REQUIRED]  
 Productivity
@@ -123,7 +123,7 @@ https://github.com/lupohirp/udemy-transcript-downloader
 
 | Version | Date | Changes | Status |
 |---------|------|---------|--------|
-| 1.0.0 | 2026-09-22 | Initial release with Manifest V3, multi-format export (TXT, SRT, VTT, MD, JSON), live preview, and batch export. | Draft |
+| 1.0.1 | 2026-09-22 | Initial release with Manifest V3, multi-format export (TXT, SRT, VTT, MD, JSON), live preview, in-player quick button, and batch course export. | Ready |
 
 
 ## Review Notes

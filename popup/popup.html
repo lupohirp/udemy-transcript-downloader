@@ -14,26 +14,37 @@
         <img src="../icons/icon-48.png" alt="Logo" class="app-logo">
         <div>
           <h1 class="app-title">Udemy Transcripts</h1>
-          <span class="app-subtitle">& Subtitles Downloader</span>
+          <span class="app-subtitle">Subtitles & notes downloader</span>
         </div>
       </div>
-      <span class="version-badge">v1.0.0</span>
+      <span class="version-badge">v1.0.1</span>
     </header>
 
     <!-- Main Content State: Not on Udemy / Not on Lecture -->
     <div id="state-inactive" class="state-view hidden">
       <div class="empty-state">
-        <div class="empty-icon">📺</div>
-        <h3>No Lecture Detected</h3>
-        <p>Navigate to any video lecture on <strong>Udemy</strong> or <strong>Udemy Business</strong> to extract and download transcripts.</p>
-        <a href="https://www.udemy.com" target="_blank" class="btn btn-secondary">Go to Udemy</a>
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+            <line x1="7" y1="2" x2="7" y2="22"/>
+            <line x1="17" y1="2" x2="17" y2="22"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <line x1="2" y1="7" x2="7" y2="7"/>
+            <line x1="2" y1="17" x2="7" y2="17"/>
+            <line x1="17" y1="17" x2="22" y2="17"/>
+            <line x1="17" y1="7" x2="22" y2="7"/>
+          </svg>
+        </div>
+        <h3>No lecture active</h3>
+        <p>Navigate to any video lecture on Udemy or Udemy Business to load its transcripts.</p>
+        <a href="https://www.udemy.com" target="_blank" class="btn btn-secondary">Open Udemy</a>
       </div>
     </div>
 
     <!-- Main Content State: Loading -->
     <div id="state-loading" class="state-view">
       <div class="loading-spinner"></div>
-      <p class="loading-text">Detecting lecture transcripts...</p>
+      <p class="loading-text">Reading lecture transcripts...</p>
     </div>
 
     <!-- Main Content State: Active Lecture -->
@@ -41,7 +52,7 @@
       <!-- Course & Lecture Info Card -->
       <div class="info-card">
         <div class="info-header">
-          <span class="info-tag">Active Lecture</span>
+          <span class="info-tag">Current lecture</span>
           <span id="badge-captions-count" class="badge">0 tracks</span>
         </div>
         <h2 id="course-title" class="course-name">Course Title</h2>
@@ -50,14 +61,14 @@
 
       <!-- Settings / Options -->
       <div class="control-group">
-        <label for="select-language" class="control-label">Transcript Language</label>
+        <label for="select-language" class="control-label">Language</label>
         <select id="select-language" class="form-select">
-          <option value="" disabled selected>Loading languages...</option>
+          <option value="" disabled selected>Loading...</option>
         </select>
       </div>
 
       <div class="control-group">
-        <label class="control-label">Export Format</label>
+        <label class="control-label">Format</label>
         <div class="format-grid">
           <button type="button" class="format-pill active" data-format="txt-clean">TXT (Clean)</button>
           <button type="button" class="format-pill" data-format="txt-timed">TXT (Timed)</button>
@@ -71,24 +82,24 @@
       <!-- Action Buttons -->
       <div class="action-buttons">
         <button id="btn-download" class="btn btn-primary" type="button">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Download Transcript
+          Download
         </button>
 
         <div class="secondary-actions">
           <button id="btn-copy" class="btn btn-secondary" type="button" title="Copy to clipboard">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
             </svg>
             <span id="copy-btn-text">Copy</span>
           </button>
           <button id="btn-preview-toggle" class="btn btn-secondary" type="button">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
               <circle cx="12" cy="12" r="3"/>
             </svg>
@@ -100,31 +111,31 @@
       <!-- Live Preview Drawer -->
       <div id="preview-container" class="preview-box hidden">
         <div class="preview-header">
-          <span class="preview-title">Live Preview (<span id="preview-word-count">0</span> words)</span>
-          <button id="btn-copy-preview" class="btn-text" type="button">Copy Preview</button>
+          <span class="preview-title">Preview (<span id="preview-word-count">0</span> words)</span>
+          <button id="btn-copy-preview" class="btn-text" type="button">Copy</button>
         </div>
         <textarea id="preview-text" class="preview-textarea" readonly></textarea>
       </div>
 
-      <!-- Batch Export Accordion -->
+      <!-- Batch Export Section -->
       <div class="batch-section">
         <button id="btn-batch-toggle" class="batch-header-btn" type="button">
-          <span>📦 Batch Course Export</span>
+          <span>Batch course export</span>
           <span id="batch-arrow">▼</span>
         </button>
         <div id="batch-content" class="batch-content hidden">
-          <p class="batch-description">Download transcripts for all lectures in this course at once.</p>
-          <div class="control-group" style="margin-bottom: 8px;">
-            <label for="select-batch-mode" class="control-label">Export Package</label>
+          <p class="batch-description">Export transcripts for all lectures across the course.</p>
+          <div class="control-group" style="margin-bottom: 6px;">
+            <label for="select-batch-mode" class="control-label">Package type</label>
             <select id="select-batch-mode" class="form-select">
-              <option value="zip" selected>📦 ZIP Archive (All in 1 file - Recommended)</option>
-              <option value="combined">📄 Single Combined Document (.txt/.md)</option>
-              <option value="individual">📁 Individual Files (per lecture)</option>
+              <option value="zip" selected>ZIP archive (.zip)</option>
+              <option value="combined">Single combined document (.txt / .md)</option>
+              <option value="individual">Individual files per lecture</option>
             </select>
           </div>
           <div class="batch-buttons-row">
             <button id="btn-batch-download" class="btn btn-outline" type="button">
-              Start Course Download
+              Download all lectures
             </button>
             <button id="btn-batch-cancel" class="btn btn-secondary hidden" type="button">
               Stop
@@ -134,7 +145,7 @@
             <div class="progress-bar-bg">
               <div id="batch-progress-bar" class="progress-bar-fill"></div>
             </div>
-            <span id="batch-progress-text" class="progress-text">Processing 0/0 lectures...</span>
+            <span id="batch-progress-text" class="progress-text">Processing...</span>
           </div>
         </div>
       </div>
@@ -145,7 +156,7 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <span>100% Client-Side & Private</span>
+      <span>Local execution • MIT License</span>
       <a href="https://github.com/lupohirp/udemy-transcript-downloader" target="_blank" class="footer-link">GitHub</a>
     </footer>
   </div>

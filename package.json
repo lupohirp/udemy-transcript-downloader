@@ -1,6 +1,6 @@
 {
   "name": "udemy-transcript-downloader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chrome extension to download transcripts and subtitles from Udemy & Udemy Business in TXT, SRT, VTT, Markdown, and JSON formats.",
   "scripts": {
     "test": "node tests/test-parser.js",

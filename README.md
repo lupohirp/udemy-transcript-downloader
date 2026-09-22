@@ -1,185 +1,148 @@
-# 🎓 Udemy Transcript & Caption Downloader
+# Udemy Transcript & Caption Downloader
 
 [![Manifest V3](https://img.shields.io/badge/Chrome%20Extension-Manifest%20V3-blue?logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Local-purple.svg)](PRIVACY.md)
 
-> A modern, open-source Google Chrome extension (Manifest V3) to download video transcripts and subtitles from **Udemy** and **Udemy Business** in **Clean TXT, Timed TXT, SRT, VTT, Markdown, and JSON** formats.
+Open-source Chrome extension (Manifest V3) to export video transcripts and subtitles from Udemy and Udemy Business in multiple text and subtitle formats.
 
----
-
-[English](#features) • [Italiano (Guida in Italiano)](#guida-in-italiano-)
+[English](#features) • [Italiano (Guida in Italiano)](#guida-in-italiano)
 
 ---
 
-## ✨ Features
+## Features
 
-- 🏢 **Udemy & Udemy Business Support**: Works on both personal `udemy.com` and corporate/enterprise portals (`*.udemy.com`).
-- 📄 **6 Export Formats**:
-  - **Clean TXT**: Smooth, continuous paragraphs with sentence-aware merging (ideal for reading and feeding into AI like ChatGPT, Claude, Gemini, or NotebookLM).
+- **Udemy & Udemy Business**: Works on both consumer accounts (`udemy.com`) and enterprise portals (`*.udemy.com`).
+- **Multiple Export Formats**:
+  - **Clean TXT**: Paragraphs with sentence-aware merging, stripping subtitle break artifacts.
   - **Timed TXT**: Line-by-line format with `[MM:SS]` timestamps.
   - **SRT (SubRip)**: Standard subtitle format with millisecond timecodes (`00:00:01,500 --> 00:00:04,200`).
-  - **VTT (WebVTT)**: Native HTML5 subtitle format.
-  - **Markdown (.md)**: Nicely structured with course title, lecture name, metadata headers, and timestamped sections.
-  - **JSON**: Structured `{ metadata, cues: [{ start, end, timestamp, text }] }` for automation and RAG pipelines.
-- 📋 **1-Click Copy to Clipboard**: Instant copy with visual feedback without saving files.
-- 👁️ **Built-in Live Preview**: Preview transcript text and word count directly inside the popup.
-- 📦 **Batch Course Export**: Download all lecture transcripts in an entire course at once.
-- 🌐 **Multi-Language Detection**: Automatically lists and switches between all available subtitle languages and auto-generated captions.
-- ⚡ **In-Player Quick Button**: Adds an unobtrusive "Transcript" button directly into the Udemy video control bar.
-- 🔒 **100% Private & Local**: Zero tracking, zero telemetry, no external servers. All processing runs entirely inside your browser.
+  - **WebVTT (.vtt)**: Native HTML5 subtitle format.
+  - **Markdown (.md)**: Formatted with course title, lecture name, metadata header, and timestamped sections.
+  - **JSON**: Structured `{ metadata, cues: [{ start, end, timestamp, text }] }` for scripting and data pipelines.
+- **Copy to Clipboard**: Quick copy button with visual confirmation.
+- **Built-in Preview**: In-popup preview with word count before downloading.
+- **Batch Course Export**: Download all transcripts across an entire course in a single click:
+  - Bundled ZIP archive (recommended)
+  - Single combined text/markdown file
+  - Separate files per lecture
+- **Multi-language**: Automatically detects and switches between all available caption languages.
+- **In-Player Quick Button**: Unobtrusive transcript button injected directly into the Udemy video controls.
+- **Local Execution**: Runs entirely in the browser. Zero analytics, zero tracking, no third-party servers.
 
 ---
 
-## 🚀 Installation (Developer Mode / Sideloading)
+## Installation (Developer Mode)
 
-You can install and use the extension immediately in Google Chrome, Brave, Edge, or any Chromium browser:
+To install the extension manually in Chrome, Brave, Edge, or other Chromium browsers:
 
-1. **Clone or Download this repository**:
+1. Clone or download this repository:
    ```bash
    git clone https://github.com/lupohirp/udemy-transcript-downloader.git
    ```
-   *(or download as ZIP from GitHub and extract it)*.
-2. Open your browser and navigate to:
+2. Open the extensions manager:
    ```
    chrome://extensions/
    ```
-3. Enable **Developer mode** using the toggle in the top-right corner.
-4. Click **Load unpacked** (*Carica estensione non pacchettizzata*) in the top-left.
-5. Select the folder containing `manifest.json` (`udemy-transcript-downloader`).
-6. The extension is now installed and active! Pin it to your browser toolbar for quick access.
+3. Enable **Developer mode** (toggle in top right).
+4. Click **Load unpacked** (top left).
+5. Select the `udemy-transcript-downloader` directory containing `manifest.json`.
+6. The extension is installed and ready to use.
 
 ---
 
-## 🛠️ Usage
+## Usage
 
-1. Open any video lecture on **Udemy** or **Udemy Business** (URL matches `https://*.udemy.com/course/.../learn/lecture/...`).
-2. Click the **Udemy Transcripts** extension icon in your toolbar (or the "Transcript" button in the video controls).
-3. Select your desired:
-   - **Language** (e.g. *English [Auto]*, *Italian*, *Spanish*, etc.)
-   - **Format** (*TXT (Clean)*, *TXT (Timed)*, *SRT*, *VTT*, *Markdown*, *JSON*)
-4. Click:
-   - 📥 **Download Transcript** to save the file.
-   - 📋 **Copy** to copy text to your clipboard.
-   - 👁️ **Preview** to inspect the text and word count.
-   - 📦 **Batch Course Export** to export transcripts for all lectures in the course.
+1. Open any course lecture on Udemy or Udemy Business (`udemy.com/course/.../learn/lecture/...`).
+2. Click the extension icon in the toolbar (or the "Transcript" button in the video controls).
+3. Select your desired language and format.
+4. Choose an action:
+   - **Download**: Saves the transcript file.
+   - **Copy**: Copies the text to your clipboard.
+   - **Preview**: Expands the preview drawer with word count.
+   - **Batch Course Export**: Expands the batch panel to export all lectures in the course.
 
 ---
 
-## 🏪 Publishing to Chrome Web Store
-
-This repository is already 100% prepared for publication on the Chrome Web Store:
-
-1. **Pre-configured Metadata**:
-   - Manifest V3 compliant with minimal permissions (`activeTab`, `storage`, `downloads`, `scripting`, `host_permissions: ["https://*.udemy.com/*"]`).
-   - High-resolution icons created (`icons/icon-16.png`, `icons/icon-48.png`, `icons/icon-128.png`).
-   - Detailed permissions justifications in [CHROMEWEBSTORE.md](CHROMEWEBSTORE.md).
-   - Public Privacy Policy in [PRIVACY.md](PRIVACY.md).
-2. **Generate the Distribution ZIP**:
-   Run the packaging script:
-   ```bash
-   npm run package
-   # or: bash scripts/package.sh
-   ```
-   This generates `dist/udemy-transcript-downloader-v1.0.0.zip` ready for upload.
-3. **Upload to Chrome Developer Dashboard**:
-   - Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/).
-   - Click **Add new item** and upload `dist/udemy-transcript-downloader-v1.0.0.zip`.
-   - Copy-paste the store descriptions, category, and permissions justifications from [CHROMEWEBSTORE.md](CHROMEWEBSTORE.md).
-   - Add your screenshots and submit for review!
-
----
-
-## 📂 Project Structure
+## Project Structure
 
 ```
 udemy-transcript-downloader/
 ├── manifest.json              # Chrome Manifest V3 configuration
 ├── background/
-│   └── service-worker.js      # Background worker (downloads, badge, defaults)
+│   └── service-worker.js      # Background worker (downloads, badge status)
 ├── content/
-│   ├── content.js             # Content script (API, video tracks & DOM extractor)
+│   ├── content.js             # Content script (API, tracks & DOM extraction)
 │   └── content.css            # Styles for in-player button
 ├── popup/
 │   ├── popup.html             # Popup user interface
-│   ├── popup.css              # Popup styling (Udemy purple theme)
-│   └── popup.js               # UI logic, preview, and format actions
+│   ├── popup.css              # Popup styling
+│   └── popup.js               # UI logic, preview, and export actions
 ├── utils/
-│   └── parser.js              # Universal WebVTT parser & format converters
+│   ├── parser.js              # WebVTT parser & format converters
+│   └── zip.js                 # Standalone ZIP builder for batch exports
 ├── icons/                     # Extension icons (16px, 48px, 128px)
 ├── scripts/
-│   ├── generate_icons.py      # Script to regenerate PNG icons
-│   └── package.sh             # Packages clean ZIP for Chrome Web Store
+│   ├── generate_icons.py      # Icon generator script
+│   └── package.sh             # ZIP packaging script for Chrome Web Store
 ├── tests/
-│   └── test-parser.js         # Automated unit tests for format parsers
+│   └── test-parser.js         # Unit tests for format parsers
 ├── CHROMEWEBSTORE.md          # Web Store listing metadata & justifications
-├── PRIVACY.md                 # Privacy Policy (required by Web Store)
-├── LICENSE                    # MIT Open Source License
-└── package.json               # NPM scripts and project info
+├── PRIVACY.md                 # Privacy Policy
+├── LICENSE                    # MIT License
+└── package.json
 ```
 
 ---
 
-<a name="guida-in-italiano-"></a>
-## 🇮🇹 Guida in Italiano
+## Building & Packaging
 
-### Descrizione
-**Udemy Transcript & Caption Downloader** è un'estensione open-source per Google Chrome (conforme allo standard **Manifest V3**) che ti consente di scaricare e copiare le trascrizioni e i sottotitoli da qualsiasi lezione o corso su **Udemy** e **Udemy Business**.
-
-### Funzionalità Principali
-- **Compatibile con Udemy e Udemy Business**: supporta sia gli account personali che aziendali (`udemy.com` e qualsiasi sottodominio `*.udemy.com`).
-- **6 Formati di Esportazione**:
-  - **TXT Pulito (Clean)**: testo continuo senza interruzioni di riga artificiali, perfetto da leggere o da inviare a modelli AI come ChatGPT, Claude, Gemini o NotebookLM per creare riassunti o mappe concettuali.
-  - **TXT Temporizzato (Timed)**: con timestamp `[MM:SS]` all'inizio di ogni frase.
-  - **SRT**: formato standard per sottotitoli video.
-  - **VTT**: formato WebVTT originale.
-  - **Markdown (.md)**: strutturato con titolo del corso, numero lezione e sezioni temporizzate.
-  - **JSON**: formato strutturato con tempi e testo per automazioni o database vettoriali (RAG).
-- **Copia con 1 Click**: copia istantanea negli appunti.
-- **Anteprima Live**: leggi il testo e vedi il conteggio parole direttamente nel popup prima di scaricare.
-- **Esportazione Batch del Corso**: scarica le trascrizioni di tutte le lezioni del corso in blocco.
-- **Supporto Multi-lingua**: seleziona qualsiasi lingua di sottotitoli disponibile per il video.
-- **Pulsante rapido nel Player**: pulsante integrato direttamente nella barra dei controlli video di Udemy.
-- **100% Locale e Privato**: nessun server esterno, nessuna registrazione, zero tracciamento.
-
-### Come Installarla Subito in Chrome (Modalità Sviluppatore)
-1. Clona o scarica questa cartella sul tuo computer:
-   ```bash
-   git clone https://github.com/lupohirp/udemy-transcript-downloader.git
-   ```
-2. Apri Chrome e digita nella barra degli indirizzi:
-   ```
-   chrome://extensions/
-   ```
-3. Attiva l'interruttore **Modalità sviluppatore** in alto a destra.
-4. Clicca su **Carica estensione non pacchettizzata** in alto a sinistra.
-5. Seleziona la cartella del progetto (`udemy-transcript-downloader`).
-6. Fatto! L'estensione è attiva e pronta all'uso.
-
-### Come Pubblicarla sul Chrome Web Store
-1. Esegui il comando per creare lo zip pronto per la pubblicazione:
-   ```bash
-   npm run package
-   ```
-   Troverai il file pronto in `dist/udemy-transcript-downloader-v1.0.0.zip`.
-2. Accedi alla [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/).
-3. Clicca su **Aggiungi nuovo elemento** e carica lo zip appena creato.
-4. Compila la scheda del negozio copiando e incollando le informazioni dal file [CHROMEWEBSTORE.md](CHROMEWEBSTORE.md) (include descrizioni, categorie e la giustificazione dei permessi approvata).
-5. Inserisci come Privacy Policy il link al file [PRIVACY.md](PRIVACY.md).
-6. Invia per la revisione!
-
----
-
-## 🧪 Testing
-
-Run the automated parser and conversion test suite:
+To run the unit test suite:
 ```bash
 npm test
 ```
 
+To build the distributable zip file for the Chrome Web Store:
+```bash
+npm run package
+```
+The output file is written to `dist/udemy-transcript-downloader-v1.0.1.zip`.
+
 ---
 
-## 📄 License
+## Guida in Italiano
 
-This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
+### Descrizione
+**Udemy Transcript & Caption Downloader** è un'estensione open source per Google Chrome (conforme allo standard Manifest V3) per esportare trascrizioni e sottotitoli da qualsiasi lezione o corso su Udemy e Udemy Business.
+
+### Caratteristiche
+- **Supporto Udemy e Udemy Business**: funziona sia su account standard (`udemy.com`) sia su portali aziendali (`*.udemy.com`).
+- **Formati supportati**:
+  - **TXT Pulito**: testo continuo formattato in paragrafi naturali, senza interruzioni di riga tipiche dei sottotitoli.
+  - **TXT Temporizzato**: righe di testo precedute da timestamp `[MM:SS]`.
+  - **SRT**: formato standard SubRip per player video.
+  - **WebVTT (.vtt)**: formato WebVTT originale.
+  - **Markdown (.md)**: note strutturate con intestazioni, dettagli della lezione e sezioni temporizzate.
+  - **JSON**: formato strutturato con tempi e testo per script e pipeline di elaborazione.
+- **Copia negli appunti**: pulsante rapido con conferma visiva.
+- **Anteprima integrata**: visualizzazione del testo e conteggio parole direttamente nel popup.
+- **Esportazione batch dell'intero corso**: scarica tutte le lezioni del corso in un unico passaggio (archivio ZIP, file unico aggregato o file separati).
+- **Selezione lingua**: rileva automaticamente tutte le tracce di sottotitoli disponibili (incluse le trascrizioni automatiche).
+- **Pulsante nel player**: scorciatoia integrata nella barra di controllo del video.
+- **Elaborazione locale**: nessun server esterno, nessun dato inviato all'esterno, zero tracciamento.
+
+### Installazione manuale (Developer Mode)
+1. Clona o scarica il repository:
+   ```bash
+   git clone https://github.com/lupohirp/udemy-transcript-downloader.git
+   ```
+2. Apri Chrome e vai su `chrome://extensions/`.
+3. Attiva la voce **Modalità sviluppatore** in alto a destra.
+4. Clicca su **Carica estensione non pacchettizzata** in alto a sinistra.
+5. Seleziona la cartella `udemy-transcript-downloader`.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
