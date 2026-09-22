@@ -27,10 +27,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnBatchToggle = document.getElementById('btn-batch-toggle');
   const batchContent = document.getElementById('batch-content');
   const btnBatchDownload = document.getElementById('btn-batch-download');
+  const btnBatchCancel = document.getElementById('btn-batch-cancel');
   const batchProgressContainer = document.getElementById('batch-progress-container');
   const batchProgressBar = document.getElementById('batch-progress-bar');
   const batchProgressText = document.getElementById('batch-progress-text');
   const batchArrow = document.getElementById('batch-arrow');
+
+  let batchCancelled = false;
 
   const toastEl = document.getElementById('toast');
 
@@ -370,13 +373,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     batchArrow.textContent = isHidden ? '▲' : '▼';
   });
 
+  // Batch Cancel button
+  btnBatchCancel.addEventListener('click', () => {
+    batchCancelled = true;
+    btnBatchCancel.disabled = true;
+    batchProgressText.textContent = 'Stopping download...';
+  });
+
   // Batch download
   btnBatchDownload.addEventListener('click', async () => {
     try {
+      batchCancelled = false;
       btnBatchDownload.disabled = true;
+      btnBatchCancel.disabled = false;
+      btnBatchCancel.classList.remove('hidden');
       batchProgressContainer.classList.remove('hidden');
       batchProgressText.textContent = 'Fetching course curriculum...';
-      batchProgressBar.style.width = '5%';
+      batchProgressBar.style.width = '3%';
 
       const curRes = await chrome.tabs.sendMessage(currentTab.id, { action: 'GET_CURRICULUM' });
       if (!curRes.success || !curRes.lectures || curRes.lectures.length === 0) {
@@ -386,78 +399,113 @@ document.addEventListener('DOMContentLoaded', async () => {
       const lectures = curRes.lectures;
       const total = lectures.length;
       let downloaded = 0;
+      let skipped = 0;
+
+      // Determine preferred language
+      const selectedCap = getSelectedCaption();
+      const preferredLocale = selectedCap ? selectedCap.locale : (prefs.selectedLanguage || null);
 
       for (let i = 0; i < total; i++) {
+        if (batchCancelled) break;
+
         const lec = lectures[i];
-        batchProgressText.textContent = `Downloading ${i + 1}/${total}: ${lec.title.substring(0, 25)}...`;
+        batchProgressText.textContent = `[${i + 1}/${total}] ${lec.title.substring(0, 26)}...`;
         batchProgressBar.style.width = `${Math.round(((i + 1) / total) * 100)}%`;
 
-        const cap = lec.captions?.find(c => c.locale === prefs.selectedLanguage) || lec.captions?.[0];
-        if (cap && cap.url) {
-          try {
-            const vttRes = await fetch(cap.url);
-            if (vttRes.ok) {
-              const vttText = await vttRes.text();
-              const cues = window.UdemyTranscriptParser.parseWebVTT(vttText);
-              if (cues.length > 0) {
-                let content = '';
-                let ext = 'txt';
-                let mime = 'text/plain;charset=utf-8';
+        // Request transcript for this lecture via content script
+        const transRes = await chrome.tabs.sendMessage(currentTab.id, {
+          action: 'GET_BATCH_LECTURE_TRANSCRIPT',
+          courseId: curRes.courseId,
+          lectureId: lec.id,
+          preferredLocale: preferredLocale
+        });
 
-                if (selectedFormat === 'srt') {
-                  content = window.UdemyTranscriptParser.toSRT(cues);
-                  ext = 'srt';
-                } else if (selectedFormat === 'vtt') {
-                  content = window.UdemyTranscriptParser.toVTT(cues);
-                  ext = 'vtt';
-                } else if (selectedFormat === 'md') {
-                  content = window.UdemyTranscriptParser.toMarkdown(cues, {
-                    courseTitle: curRes.courseTitle,
-                    lectureTitle: lec.title,
-                    lectureIndex: lec.index,
-                    language: cap.title
-                  });
-                  ext = 'md';
-                } else if (selectedFormat === 'json') {
-                  content = window.UdemyTranscriptParser.toJSON(cues, {
-                    courseTitle: curRes.courseTitle,
-                    lectureTitle: lec.title,
-                    lectureIndex: lec.index
-                  });
-                  ext = 'json';
-                } else if (selectedFormat === 'txt-timed') {
-                  content = window.UdemyTranscriptParser.toTimestampedText(cues);
-                  ext = 'txt';
-                } else {
-                  content = window.UdemyTranscriptParser.toCleanText(cues);
-                  ext = 'txt';
-                }
+        if (transRes && transRes.success && transRes.vttText) {
+          const cues = window.UdemyTranscriptParser.parseWebVTT(transRes.vttText);
+          if (cues && cues.length > 0) {
+            let content = '';
+            let ext = 'txt';
+            let mime = 'text/plain;charset=utf-8';
 
-                const filename = `Udemy Transcripts/${sanitizeName(curRes.courseTitle)}/${String(lec.index || i + 1).padStart(2, '0')} - ${sanitizeName(lec.title)}.${ext}`;
-                await chrome.runtime.sendMessage({
-                  action: 'DOWNLOAD_FILE',
-                  filename,
-                  content,
-                  mimeType: mime
-                });
-                downloaded++;
-                // Small throttle to avoid flooding downloads
-                await new Promise(r => setTimeout(r, 250));
-              }
+            const meta = {
+              courseTitle: curRes.courseTitle,
+              lectureTitle: transRes.lectureTitle || lec.title,
+              lectureIndex: lec.index,
+              language: transRes.captionTitle
+            };
+
+            switch (selectedFormat) {
+              case 'txt-clean':
+                content = window.UdemyTranscriptParser.toCleanText(cues);
+                ext = 'txt';
+                mime = 'text/plain;charset=utf-8';
+                break;
+              case 'txt-timed':
+                content = window.UdemyTranscriptParser.toTimestampedText(cues);
+                ext = 'txt';
+                mime = 'text/plain;charset=utf-8';
+                break;
+              case 'srt':
+                content = window.UdemyTranscriptParser.toSRT(cues);
+                ext = 'srt';
+                mime = 'application/x-subrip;charset=utf-8';
+                break;
+              case 'vtt':
+                content = window.UdemyTranscriptParser.toVTT(cues);
+                ext = 'vtt';
+                mime = 'text/vtt;charset=utf-8';
+                break;
+              case 'md':
+                content = window.UdemyTranscriptParser.toMarkdown(cues, meta);
+                ext = 'md';
+                mime = 'text/markdown;charset=utf-8';
+                break;
+              case 'json':
+                content = window.UdemyTranscriptParser.toJSON(cues, meta);
+                ext = 'json';
+                mime = 'application/json;charset=utf-8';
+                break;
             }
-          } catch (lecErr) {
-            console.warn(`Failed lecture ${lec.title}:`, lecErr);
+
+            const safeCourse = sanitizeName(curRes.courseTitle || 'Udemy Course');
+            const safeIndex = String(lec.index || i + 1).padStart(2, '0');
+            const safeTitle = sanitizeName(lec.title || `Lecture_${safeIndex}`);
+            const safeLang = sanitizeName(transRes.locale || 'en');
+            const filename = `Udemy Transcripts/${safeCourse}/${safeIndex} - ${safeTitle}.${safeLang}.${ext}`;
+
+            await chrome.runtime.sendMessage({
+              action: 'DOWNLOAD_FILE',
+              filename,
+              content,
+              mimeType: mime
+            });
+
+            downloaded++;
+            // Small throttle to avoid flooding Chrome downloads manager
+            await new Promise(r => setTimeout(r, 250));
+          } else {
+            skipped++;
           }
+        } else {
+          skipped++;
         }
       }
 
-      batchProgressText.textContent = `Completed! ${downloaded} transcripts downloaded.`;
-      showToast(`Batch completed: ${downloaded} transcripts.`);
+      batchProgressBar.style.width = '100%';
+      if (batchCancelled) {
+        batchProgressText.textContent = `Stopped: ${downloaded} downloaded, ${skipped} skipped.`;
+        showToast(`Batch stopped: ${downloaded} downloaded.`);
+      } else {
+        batchProgressText.textContent = `Completed! ${downloaded} downloaded (${skipped} skipped/no subtitles).`;
+        showToast(`Batch completed: ${downloaded} transcripts downloaded.`);
+      }
     } catch (err) {
+      console.error('Batch download error:', err);
       alert(`Batch error: ${err.message}`);
-      batchProgressText.textContent = 'Batch download failed.';
+      batchProgressText.textContent = 'Batch download encountered an error.';
     } finally {
       btnBatchDownload.disabled = false;
+      btnBatchCancel.classList.add('hidden');
     }
   });
 });

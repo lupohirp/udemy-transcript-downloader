@@ -114,9 +114,14 @@
         </button>
         <div id="batch-content" class="batch-content hidden">
           <p class="batch-description">Download transcripts for all lectures in this course at once.</p>
-          <button id="btn-batch-download" class="btn btn-outline" type="button">
-            Start Course Download
-          </button>
+          <div class="batch-buttons-row">
+            <button id="btn-batch-download" class="btn btn-outline" type="button">
+              Start Course Download
+            </button>
+            <button id="btn-batch-cancel" class="btn btn-secondary hidden" type="button">
+              Stop
+            </button>
+          </div>
           <div id="batch-progress-container" class="batch-progress-container hidden">
             <div class="progress-bar-bg">
               <div id="batch-progress-bar" class="progress-bar-fill"></div>

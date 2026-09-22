@@ -400,6 +400,11 @@ body {
   color: var(--text-muted);
 }
 
+.batch-buttons-row {
+  display: flex;
+  gap: 8px;
+}
+
 .batch-progress-container {
   display: flex;
   flex-direction: column;
