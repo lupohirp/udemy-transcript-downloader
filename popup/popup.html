@@ -114,6 +114,14 @@
         </button>
         <div id="batch-content" class="batch-content hidden">
           <p class="batch-description">Download transcripts for all lectures in this course at once.</p>
+          <div class="control-group" style="margin-bottom: 8px;">
+            <label for="select-batch-mode" class="control-label">Export Package</label>
+            <select id="select-batch-mode" class="form-select">
+              <option value="zip" selected>📦 ZIP Archive (All in 1 file - Recommended)</option>
+              <option value="combined">📄 Single Combined Document (.txt/.md)</option>
+              <option value="individual">📁 Individual Files (per lecture)</option>
+            </select>
+          </div>
           <div class="batch-buttons-row">
             <button id="btn-batch-download" class="btn btn-outline" type="button">
               Start Course Download
@@ -143,6 +151,7 @@
   </div>
 
   <script src="../utils/parser.js"></script>
+  <script src="../utils/zip.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

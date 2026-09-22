@@ -10,7 +10,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   const defaults = {
     preferredFormat: currentSettings.preferredFormat || 'txt-clean',
     includeTimestamps: currentSettings.includeTimestamps ?? false,
-    languagePreference: currentSettings.languagePreference || 'auto'
+    languagePreference: currentSettings.languagePreference || 'auto',
+    batchMode: currentSettings.batchMode || 'zip'
   };
 
   await chrome.storage.local.set(defaults);
@@ -34,11 +35,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   (async () => {
     try {
       if (message.action === 'DOWNLOAD_FILE') {
-        const { filename, content, mimeType = 'text/plain;charset=utf-8' } = message;
+        const { filename, content, mimeType = 'text/plain;charset=utf-8', isBase64 = false } = message;
         
-        // Encode content as UTF-8 Data URL (safe in service workers)
-        const base64Content = btoa(unescape(encodeURIComponent(content)));
-        const dataUrl = `data:${mimeType};base64,${base64Content}`;
+        let dataUrl = '';
+        if (isBase64) {
+          dataUrl = `data:${mimeType};base64,${content}`;
+        } else {
+          // Encode content as UTF-8 Data URL
+          const base64Content = btoa(unescape(encodeURIComponent(content)));
+          dataUrl = `data:${mimeType};base64,${base64Content}`;
+        }
 
         const downloadId = await chrome.downloads.download({
           url: dataUrl,
@@ -47,8 +53,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
 
         sendResponse({ success: true, downloadId });
+      } else if (message.action === 'UPDATE_BADGE') {
+        const tabId = sender.tab?.id || message.tabId;
+        if (tabId) {
+          await chrome.action.setBadgeText({ tabId, text: message.text || '' });
+          if (message.color) {
+            await chrome.action.setBadgeBackgroundColor({ tabId, color: message.color });
+          } else {
+            await chrome.action.setBadgeBackgroundColor({ tabId, color: '#10B981' }); // Green progress
+          }
+        }
+        sendResponse({ success: true });
       } else if (message.action === 'QUICK_DOWNLOAD_CLICKED') {
-        // Try opening extension popup if supported (Chrome 127+)
         if (chrome.action?.openPopup) {
           try {
             await chrome.action.openPopup();
@@ -69,12 +85,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 /**
- * Sanitizes filename to prevent filesystem errors
+ * Sanitizes filename to prevent filesystem errors while preserving subfolders
  */
 function sanitizeFilename(name) {
   if (!name) return 'transcript.txt';
   return name
-    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/[<>:"|?*]/g, '_')
     .replace(/\s+/g, ' ')
     .trim();
 }

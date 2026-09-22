@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Udemy Transcript & Caption Downloader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Download video transcripts and subtitles from Udemy & Udemy Business in TXT, SRT, VTT, Markdown, and JSON formats.",
   "icons": {
     "16": "icons/icon-16.png",
@@ -26,6 +26,8 @@
         "https://*.udemy.com/*"
       ],
       "js": [
+        "utils/parser.js",
+        "utils/zip.js",
         "content/content.js"
       ],
       "css": [
