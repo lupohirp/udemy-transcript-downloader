@@ -138,10 +138,11 @@ class SimpleZip {
   }
 }
 
-// Export for Node, ES Modules, and Browser
+// Export for Node and browser/content-script globals
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { SimpleZip };
-} else if (typeof window !== 'undefined') {
+}
+if (typeof window !== 'undefined') {
   window.SimpleZip = SimpleZip;
 } else if (typeof self !== 'undefined') {
   self.SimpleZip = SimpleZip;
