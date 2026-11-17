@@ -279,29 +279,24 @@ function toJSON(cues, meta = {}) {
   return JSON.stringify(data, null, 2);
 }
 
-// Export for ES modules, Node.js (CommonJS), and browser globals
+// Export for Node.js (CommonJS) and browser/content-script globals
+const UdemyTranscriptParser = {
+  parseWebVTT,
+  parseTimestampToSeconds,
+  formatSeconds,
+  toCleanText,
+  toTimestampedText,
+  toSRT,
+  toVTT,
+  toMarkdown,
+  toJSON
+};
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    parseWebVTT,
-    parseTimestampToSeconds,
-    formatSeconds,
-    toCleanText,
-    toTimestampedText,
-    toSRT,
-    toVTT,
-    toMarkdown,
-    toJSON
-  };
-} else if (typeof window !== 'undefined') {
-  window.UdemyTranscriptParser = {
-    parseWebVTT,
-    parseTimestampToSeconds,
-    formatSeconds,
-    toCleanText,
-    toTimestampedText,
-    toSRT,
-    toVTT,
-    toMarkdown,
-    toJSON
-  };
+  module.exports = UdemyTranscriptParser;
+}
+if (typeof window !== 'undefined') {
+  window.UdemyTranscriptParser = UdemyTranscriptParser;
+} else if (typeof self !== 'undefined') {
+  self.UdemyTranscriptParser = UdemyTranscriptParser;
 }
