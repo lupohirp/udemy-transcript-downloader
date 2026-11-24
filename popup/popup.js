@@ -98,9 +98,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch {
       // If content script was not injected yet, inject it now
       try {
+        // parser.js + zip.js must load before content.js (batch export depends on them)
         await chrome.scripting.executeScript({
           target: { tabId: tab.id },
-          files: ['content/content.js']
+          files: ['utils/parser.js', 'utils/zip.js', 'content/content.js']
         });
         await chrome.scripting.insertCSS({
           target: { tabId: tab.id },
@@ -444,6 +445,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const mode = selectBatchMode ? selectBatchMode.value : 'zip';
       const selectedCap = getSelectedCaption();
       const preferredLocale = selectedCap ? selectedCap.locale : (prefs.selectedLanguage || null);
+
+      // Ensure parser/zip are present (fallback injection previously omitted them)
+      await chrome.scripting.executeScript({
+        target: { tabId: currentTab.id },
+        files: ['utils/parser.js', 'utils/zip.js']
+      });
 
       await chrome.tabs.sendMessage(currentTab.id, {
         action: 'START_BATCH_COURSE_DOWNLOAD',

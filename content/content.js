@@ -487,6 +487,10 @@
     };
 
     try {
+      if (!window.UdemyTranscriptParser || typeof window.UdemyTranscriptParser.parseWebVTT !== 'function') {
+        throw new Error('Transcript parser not loaded. Reload the Udemy tab and try again.');
+      }
+
       const curRes = await fetchCurriculum();
       if (!curRes.success || !curRes.lectures || curRes.lectures.length === 0) {
         throw new Error(curRes.error || 'No lectures found in curriculum.');
